@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Payment Form</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+    
+      *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      
+    }
+
+      body {
+        font-family: "Poppins" , sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 50xvh;
+        background: #9a1750;
+        padding: 30px;
+        background-image: url('./purple.jpg');
+        background-size: 100% 100%;
+      }
+            
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      
+      .select-city, .payment-form {
+        flex: 1 1 45%;
+        margin: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+      }
+      
+      .select-city h2, .payment-form h2 {
+        margin-top: 0;
+      }
+      
+      .select-city label, .payment-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      
+      .select-city input[type="text"], .select-city select, .payment-form input[type="text"], .payment-form input[type="number"], .payment-form select {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #dfbbfb;
+        margin-bottom: 20px;
+      }
+      
+      .payment-form label {
+        margin-top: 10px;
+      }
+      
+      .payment-form input[type="radio"] {
+        display: inline-block;
+        margin-right: 10px;
+      }
+      
+      .payment-form button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #9a1750;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      
+      .payment-form button:hover {
+        background-color: #9a1750;
+      }
+      
+      @media screen and (max-width: 768px) {
+        .select-city, .payment-form {
+          flex-basis: 100%;
+        }
+      }
+
+      .pay-now-btn {
+        color: #fff;
+        background: #47007a;
+        border-radius: 5 px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        border: none;
+        padding: 15px 30px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="select-city">
+        <h2>Select City</h2>
+        <label for="city"> <i class="fas fa-map-o"></i> City:</label>
+        <select id="city" name="city"> 
+          <option value="Pune">Pune</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Pimpri">Pimpri Chinchwad</option>
+          <option value="Nashik">Kolhapur</option>
+        </select>
+        <label for="start"> <i class="fas fa-map-marker"></i> Starting Point:</label>
+        <input type="text" id="start" name="start">
+        <label for="destination"> <i class="fas fa-map-marker"></i> Destination Point:</label>
+        <input type="text" id="destination" name="destination">
+        <label for="fare">Fare:</label>
+        <select id="fare" name="fare">
+          <option value="5">5</option>
+          <option value="5">10</option>
+          <option value="5">15</option>
+          <option value="5">20</option>
+          <option value="5">25</option>
+        </select>
+        </div>
+        <div class="payment-form">
+        <h2>Payment Information</h2>
+        <label for="name"> <i class="fas fa-user-circle-o" aria-hidden="true"></i> Name:</label>
+        <input type="text" id="name" name="name">
+        <label for="payment-option"> <i class="fas fa-id-card"></i> Payment Option:</label>
+        <select id="payment-option" name="payment-option">
+            <option value="UPI">UPI</option>
+            <option value="Credit/Debit"> Credit/Debit Card</option>
+        </select>
+        <div class="card-details">
+            <label for="card-number"> <i class="fas fa-vcard"> </i> Card Number:</label>
+            <input type="text" id="card-number" name="card-number">
+            <label for="expiry-date">Expiry Date:</label>
+            <input type="text" id="expiry-date" name="expiry-date">
+            <label for="cvv"> <i class="fas fa-key"></i> CVV:</label>
+            <input type="text" id="cvv" name="cvv">
+        </div>
+        <input class="pay-now-btn" type="button" value="Pay Now" onclick="generate_qr()">
+        </div>
+    </div>
+
+    <div id="qr_code">
+    </div>
+
+
+    <script>
+
+		function generate_qr() {
+            var name = document.getElementById('name').value;
+			var city = document.getElementById('city').value;
+            var start = document.getElementById('start').value;
+            var destination = document.getElementById('destination').value;
+            var fare = document.getElementById('fare').value;
+			var payment_option = document.getElementById('payment-option').value;
+			var message = "Ticket is successfully purchased.";
+
+			//console.log('Name: ' + name + " " + email + " " + subject + " " + message);
+
+			var url = "https://chart.googleapis.com/chart?cht=qr&chs=400x400&chl=Name:" +
+			name + "%0a City: " + city + " Start: " + start + " Destination: " + destination + " Fare: "+ fare + " Payment_option: "+ payment_option + " Message: "+ message;
+
+			var ifr = `<iframe src="${url}" height="420" width="420" align = "center"></iframe>`;
+
+			document.getElementById('qr_code').innerHTML = ifr;
+		}
+
+	</script>
+    </body>
+    
